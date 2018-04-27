@@ -16,11 +16,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     train.cpp \
-    datamanager.cpp
+    util.cpp \
+    util.cpp \
+    util.cpp
 
 HEADERS += \
     mail.h \
-    datamanager.h
+    util.h
 
 QT_CONFIG -= no-pkg-config
 CONFIG  += link_pkgconfig
