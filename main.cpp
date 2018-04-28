@@ -34,42 +34,49 @@ using namespace cv;
 int main(int argc, char *argv[])
 {
     util ut;
-    string filename;
+    string filenumber;
 
-    HOGDescriptor hog(Size(32,32),Size(8,8),Size(4,4),Size(4,4),9,1);
+    HOGDescriptor hog(
+                Size(64,64),//winSize
+                Size(16,16),//blocksize
+                Size(8,8),//blockStride
+                Size(8,8),//cellSize
+                9,//nbins
+                1,//derivAper
+                -1,//winSigma
+                0,//histogramNormType
+                0.2,//L2HysThresh
+                0,//gammal correction
+                64,//nlevels
+                false);//signed or unsigned gradients
     //hog.winSize = Size(64,64);
     vector<float> descriptors;
-    vector<Point> location;
 
     bool success = true;
-    filename = "000002";
-    vector<tGroundtruth> gt = ut.loadGroundtruth("000002.txt",success);
-    //cout<<gt[0].box.x1<<gt[0].box.x2 <<endl;
+    filenumber = "000002";
+    tFileName fname = ut.setFileName(filenumber);
+    vector<tGroundtruth> gt = ut.loadGroundtruth(fname.filenamelabel,success);
+    vector<Rect> roi;
     Point2i p1,p2;
     Mat inputImg;
     Mat gray;
 
-    inputImg = imread("000002.png");
-    for(unsigned int i=0;i < gt.size()-1;i++){
+    inputImg = imread(fname.filenameimage);
+    roi = ut.setROI(gt);
 
-        p1.x = (int)gt[i].box.x1;
-        p1.y = (int)gt[i].box.y1;
-        p2.x = (int)gt[i].box.x2;
-        p2.y = (int)gt[i].box.y2;
 
-        Rect r = Rect(p1,p2);
-        cvtColor(inputImg(r),gray,COLOR_BGR2GRAY);
+    cvtColor(inputImg(roi[0]),gray,COLOR_BGR2GRAY);
         //resizing
-        //resize(gray,gray,Size(64,64));
-//        hog.compute(gray,descriptors,Size(0,0),Size(0,0),location);
+    resize(gray,gray,Size(64,64));
+    hog.compute(gray,descriptors);
+    cout<<descriptors.size()<<"rect center:"<<roi[0].width<<endl;
 
-        //rectangle(inputImg,r,Scalar(0,255,0),2,1,0);
-        imshow("bound",gray);
+//        //rectangle(inputImg,r,Scalar(0,255,0),2,1,0);
 
-    }
+//    }
 
 
-    //imshow("bound",gray);
+    imshow("bound",gray);
 
     waitKey(5000);
     return 0;

@@ -104,13 +104,20 @@ struct tGroundtruth {
     box(tBox(type,x1,y1,x2,y2,alpha)),truncation(truncation),occlusion(occlusion) {}
 };
 
+struct tFileName
+{
+    string filenamelabel,filenameimage;//input file name
+};
 
 class util
 {
 public:
     util();
+
     //functions
     vector<tGroundtruth> loadGroundtruth(string file_name,bool &success);
+    tFileName setFileName(string filenum);
+    vector<Rect> setROI(vector<tGroundtruth> &gt);
 };
 
 #endif // UTIL_H
