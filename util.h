@@ -6,6 +6,8 @@
 #include <opencv2/xfeatures2d.hpp>
 #include <opencv2/features2d.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
+#include <opencv2/ml.hpp>
+#include <opencv2/objdetect.hpp>
 #include <iostream>
 #include <vector>
 
@@ -30,6 +32,7 @@
 
 using namespace std;
 using namespace cv;
+using namespace cv::ml;
 
 /*=======================================================================
 STATIC EVALUATION PARAMETERS
@@ -116,8 +119,11 @@ public:
 
     //functions
     vector<tGroundtruth> loadGroundtruth(string file_name,bool &success);
-    tFileName setFileName(string filenum);
-    vector<Rect> setROI(vector<tGroundtruth> &gt);
+    tFileName setFileName(string filenum, bool trainorvalid);
+    vector<Rect> setROI(vector<tGroundtruth> &gt,Mat &img);
+    void stackHog(Mat &image,HOGDescriptor &hog,vector<tGroundtruth> &gt,vector<vector<float>> &hogset,vector<int> &label);
+
+    void ConvertVectortoMatrix(vector<vector<float> > &ipHOG, Mat & opMat);
 };
 
 #endif // UTIL_H
