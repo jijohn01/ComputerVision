@@ -61,11 +61,11 @@ vector<Rect> util::setROI(vector<tGroundtruth> &gt,Mat &img){
         if(h>w){
             //예외처리
             if(center.x<(h/2)||(int)gt[i].box.x1+h>img.size().width){r = Rect((int)gt[i].box.x1,center.y-(h/2),w,w);}
-            else {r = Rect(center.x-(w/2),center.y-(h/2),h,h);}
+            else {r = Rect(center.x-(w/2),center.y-(h/2),w,w);}
         }
         else{
             if(center.y<(w/2)||(int)gt[i].box.y1+w>img.size().height){r = Rect(center.x-(w/2),(int)gt[i].box.y1,h,h);}
-            else {r = Rect(center.x-(w/2),center.y-(h/2),w,w);}
+            else {r = Rect(center.x-(w/2),center.y-(h/2),h,h);}
         }
 
         roi.push_back(r);
@@ -79,12 +79,13 @@ void util::stackHog(Mat &image,HOGDescriptor &hog,vector<tGroundtruth> &gt,vecto
 {
     vector<Rect> roi = util::setROI(gt,image);
     vector<float> descriptors;
+    Mat gray;
 
     for(unsigned int i = 0;i<roi.size();i++){
         Mat gray;
         cvtColor(image(roi[i]),gray,COLOR_BGR2GRAY);
     //resizing
-        resize(gray,gray,Size(32,32));
+        resize(gray,gray,Size(64,64));
 
         hog.compute(gray,descriptors);
 //        cout<<"rect width:"<<roi[i].width<<endl;
@@ -101,6 +102,29 @@ void util::stackHog(Mat &image,HOGDescriptor &hog,vector<tGroundtruth> &gt,vecto
             label.push_back(1);
         }
     }
+
+    /******test code*********/
+    Rect box;
+        box.width = 64;
+        box.height = 64;
+        const int size_x = box.width;
+        const int size_y = box.height;
+        srand( (unsigned int)time( NULL ) );
+        for(int i = 0;i<12;i++){
+            box.x = rand() % ( image.cols - size_x );
+            box.y = rand() % ( image.rows - size_y );
+            cvtColor(image(box),gray,COLOR_BGR2GRAY);
+    //resizing
+            resize(gray,gray,Size(64,64));
+
+            hog.compute(gray,descriptors);
+//        cout<<"rect width:"<<roi[i].width<<endl;
+            hogset.push_back(descriptors);
+            label.push_back(-1);
+        }
+
+
+
 }
 
 void util::ConvertVectortoMatrix(vector<vector<float> > &ipHOG, Mat & opMat)
