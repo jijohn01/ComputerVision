@@ -45,7 +45,7 @@ void getSVMParams(SVM *svm)
 
 void SVMtrain(Mat &trainMat, vector<int> &trainLabels, Mat &testResponse, Mat &testMat) {
     Ptr<SVM> svm = SVM::create();
-    svm->setGamma(0.70625);
+    svm->setGamma(1.70625);
     svm->setC(1);
     svm->setKernel(SVM::RBF);
     svm->setType(SVM::C_SVC);
@@ -54,6 +54,7 @@ void SVMtrain(Mat &trainMat, vector<int> &trainLabels, Mat &testResponse, Mat &t
     svm->train(td);
     //svm->trainAuto(td);
     cout<<"train complete!!"<<endl;
+
     svm->save("firetrain.yml");
     cout<<"save the yml file!!"<<endl;
     svm->predict(testMat, testResponse);
@@ -129,6 +130,7 @@ int main(int argc, char *argv[])
     vector<int> trainLabel;//car=1,doncare = -1,people =0
     vector<int> validLabel;
 
+    for(int j=0;j<5;j++){
     for(int i=0;i<7000;i++){
         filenumber = i2sFillZero(i,6);
 
@@ -140,6 +142,7 @@ int main(int argc, char *argv[])
 
         cout<<"train file number "<<i<<"complete"<<endl;
 
+    }
     }
 
     int descriptor_size = trainHog[0].size();
